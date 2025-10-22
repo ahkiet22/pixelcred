@@ -1,26 +1,41 @@
+"use client";
+
 import type React from "react";
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { getFullnodeUrl } from "@mysten/sui/client";
+import {
+  createNetworkConfig,
+  SuiClientProvider,
+  WalletProvider,
+} from "@mysten/dapp-kit";
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "PixelCred - On-Chain Developer Identity",
-  description:
-    "Create your on-chain developer profile on Sui blockchain with PixelCred",
-};
+// export const metadata: Metadata = {
+//   title: "PixelCred - On-Chain Developer Identity",
+//   description:
+//     "Create your on-chain developer profile on Sui blockchain with PixelCred",
+// };
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { networkConfig } = createNetworkConfig({
+    localnet: { url: getFullnodeUrl("localnet") },
+    testnet: { url: getFullnodeUrl("testnet") },
+    mainnet: { url: getFullnodeUrl("mainnet") },
+  });
+  const queryClient = new QueryClient();
+
   return (
     <html lang="en">
       <body className={`font-sans antialiased bg-background text-foreground`}>
-        {children}
+        <QueryClientProvider client={queryClient}>
+          <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
+            <WalletProvider autoConnect>{children}</WalletProvider>
+          </SuiClientProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );

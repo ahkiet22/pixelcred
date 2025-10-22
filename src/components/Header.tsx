@@ -2,9 +2,40 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import "@mysten/dapp-kit/dist/index.css";
+import {
+  ConnectButton,
+  useCurrentAccount,
+  useDisconnectWallet,
+  useSuiClientQuery,
+} from "@mysten/dapp-kit";
+import { shortAddress } from "@/helpers/short-address";
+import { ChevronDown, Copy, Eye, LogOut, Settings } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
+import Image from "next/image";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const account = useCurrentAccount();
+  const { mutate: disconnect } = useDisconnectWallet();
+
+  const { data, isLoading, error } = useSuiClientQuery(
+    "getBalance",
+    {
+      owner: account?.address || "",
+      coinType: "0x2::sui::SUI",
+    },
+    {
+      enabled: !!account?.address, // chỉ chạy khi đã connect
+    }
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -13,6 +44,8 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  console.log(data, error);
 
   return (
     <header
@@ -69,12 +102,83 @@ export default function Header() {
 
           {/* CTA Button */}
           <div className="flex items-center gap-3">
-            <Link
-              href="/lobby"
-              className="text-black border-4 border-black shadow-[5px_5px_0_#000] px-5 md:px-6 py-2 md:py-3 font-black uppercase text-sm md:text-base transition-all duration-300 hover:bg-[#26a0d8] hover:shadow-[7px_7px_0_#000] hover:-translate-y-1 active:shadow-[3px_3px_0_#000] active:translate-y-0 flex items-center gap-2"
-            >
-              CONNECT WALLET
-            </Link>
+            {/* <div className="text-black border-4 border-black shadow-[5px_5px_0_#000] px-5 md:px-6 py-2 md:py-3 font-black uppercase text-sm md:text-base transition-all duration-300 hover:bg-[#26a0d8] hover:shadow-[7px_7px_0_#000] hover:-translate-y-1 active:shadow-[3px_3px_0_#000] active:translate-y-0 flex items-center gap-2"> */}
+
+            {account ? (
+              <Sheet>
+                <SheetTrigger>
+                  <button className="text-black! border-4! border-black! shadow-[5px_5px_0_#000]! px-5! rounded-none! md:px-6! py-2! md:py-3! font-black! uppercase! text-sm! md:text-base! transition-all! duration-300! hover:bg-[#26a0d8]! hover:shadow-[7px_7px_0_#000]! hover:-translate-y-1! active:shadow-[3px_3px_0_#000]! active:translate-y-0! flex! items-center! gap-2!">
+                    {shortAddress(account.address)}
+                    <ChevronDown />
+                  </button>
+                </SheetTrigger>
+                <SheetContent className="rounded-2xl">
+                  <SheetHeader>
+                    <SheetTitle>Account</SheetTitle>
+                    <SheetDescription>
+                      <div className="w-full max-w-md">
+                        <div className="relative overflow-hidden rounded-2xl bg-linear-to-br from-purple-600/20 via-blue-600/10 to-slate-900/50 border border-purple-500/20 backdrop-blur-xl p-8 shadow-2xl">
+                          <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl pointer-events-none" />
+                          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
+
+                          <div className="relative z-10 space-y-8">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3 flex-1 rounded-2xl ">
+                                <div className="flex items-center gap-3 bg-white/30 backdrop-blur-lg rounded-2xl shadow-lg px-2 py-1">
+                                  <div className="w-8 h-8 rounded-full bg-linear-to-br from-purple-400 to-blue-400 flex items-center justify-center">
+                                    <Image
+                                      src={"/sui-sui-logo.png"}
+                                      width={100}
+                                      height={100}
+                                      className="w-5 h-5"
+                                      alt="sui"
+                                    />
+                                  </div>
+                                  <p className="text-base font-mono font-semibold text-white">
+                                    {shortAddress(account.address)}
+                                  </p>
+                                </div>
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard?.writeText(
+                                      account.address
+                                    );
+                                  }}
+                                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                  title="Copy address"
+                                >
+                                  <Copy className="w-5 h-5 text-white hover:text-white" />
+                                </button>
+                              </div>
+
+                              <button
+                                onClick={() => disconnect()}
+                                className="hover:text-red-500 hover:bg-white/10 rounded-lg transition-colors p-2"
+                              >
+                                <LogOut />
+                              </button>
+                            </div>
+
+                            <div className=" flex items-center gap-x-2  ">
+                              <p className="text-sm text-slate-400">Balance:</p>
+                              <p className="text-xl font-bold text-white tracking-tight">
+                                {Number(data?.totalBalance)}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </SheetDescription>
+                  </SheetHeader>
+                </SheetContent>
+              </Sheet>
+            ) : (
+              <ConnectButton
+                connectText="CONNECT WALLET"
+                className="text-black! border-4! border-black! shadow-[5px_5px_0_#000]! px-5! rounded-none! md:px-6! py-2! md:py-3! font-black! uppercase! text-sm! md:text-base! transition-all! duration-300! hover:bg-[#26a0d8]! hover:shadow-[7px_7px_0_#000]! hover:-translate-y-1! active:shadow-[3px_3px_0_#000]! active:translate-y-0! flex! items-center! gap-2!"
+              />
+            )}
+            {/* </div> */}
 
             {/* Mobile Menu Button */}
             <button className="lg:hidden bg-black text-white border-4 border-black shadow-[4px_4px_0_#ff0080] px-3 py-2 font-black hover:shadow-[6px_6px_0_#ff0080] hover:-translate-y-1 transition-all duration-300">
