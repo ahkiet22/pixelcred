@@ -9,6 +9,8 @@ import {
   SuiClientProvider,
   WalletProvider,
 } from "@mysten/dapp-kit";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 // export const metadata: Metadata = {
 //   title: "PixelCred - On-Chain Developer Identity",
@@ -33,7 +35,11 @@ export default function RootLayout({
       <body className={`font-sans antialiased bg-background text-foreground`}>
         <QueryClientProvider client={queryClient}>
           <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
-            <WalletProvider autoConnect>{children}</WalletProvider>
+            <WalletProvider autoConnect>
+              <Header />
+              {children}
+              <Footer />
+            </WalletProvider>
           </SuiClientProvider>
         </QueryClientProvider>
       </body>

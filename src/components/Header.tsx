@@ -10,7 +10,7 @@ import {
   useSuiClientQuery,
 } from "@mysten/dapp-kit";
 import { shortAddress } from "@/helpers/short-address";
-import { ChevronDown, Copy, Eye, LogOut, Settings } from "lucide-react";
+import { ChevronDown, Copy, LogOut } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -25,6 +25,12 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const account = useCurrentAccount();
   const { mutate: disconnect } = useDisconnectWallet();
+  const handleCertificatesClick = () => {
+  const section = document.getElementById("certificates");
+  if (section) {
+    section.scrollIntoView({ behavior: "smooth" });
+  }
+};
 
   const { data, isLoading, error } = useSuiClientQuery(
     "getBalance",
@@ -75,7 +81,7 @@ export default function Header() {
           {/* Navigation */}
           <nav className="hidden lg:flex items-center gap-2">
             <Link
-              href="#how-it-works"
+              href="#features"
               className="px-5 py-2 font-bold uppercase text-black hover:bg-[#14f195] hover:text-black border-2 border-transparent hover:border-black hover:shadow-[3px_3px_0_#000] transition-all duration-300"
             >
               Features
@@ -87,7 +93,8 @@ export default function Header() {
               Project
             </Link>
             <Link
-              href="#roadmap"
+            onClick={handleCertificatesClick}
+              href="#certificates"
               className="px-5 py-2 font-bold uppercase text-black hover:bg-[#9945ff] hover:text-black border-2 border-transparent hover:border-black hover:shadow-[3px_3px_0_#000] transition-all duration-300"
             >
               Certificates
