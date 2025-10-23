@@ -2,11 +2,12 @@
 module prixel_cred::prixel_cred;
 
 use std::string::String;
+use sui::dynamic_field as df;
+use sui::dynamic_object_field as odf;
 use sui::event;
 use sui::object;
 use sui::transfer;
 use sui::tx_context;
-use sui::dynamic_field;
 
 //////////////////
 /// ERRORS
@@ -92,11 +93,7 @@ public fun create(
 ) {
     let uid = object::new(ctx);
     let id = object::uid_to_inner(&uid);
-    let cap = UsernameCap {
-        id: object::new(ctx),
-        username: username.clone(),
-        owner: tx_context::sender(ctx),
-    };
+
     let profile = Profile {
         id: uid,
         name,
@@ -163,6 +160,31 @@ public fun edit_profile(
     profile.linkedin = new_linkedin;
     profile.website = new_website;
     profile.bio = new_bio;
+}
+
+public fun add_certificate(
+    profile: &mut Profile,
+    ctx: &mut TxContext,
+    issuer: String,
+    credential_id: String,
+    meta: String,
+) {
+    let sender = tx_context::sender(ctx);
+    assert!(sender == profile.owner, E_NOT_OWNER);
+    assert!(profile.verified == false, E_FORBIDDEN);
+
+    let cert = CertificateCap {
+        id: object::new(ctx),
+        issuer,
+        credential_id,
+        meta,
+        owner: sender,
+    };
+    // let profile_addr = object::uid_to_address(&profile.id);
+    // transfer::transfer(cert, profile_addr);
+
+    let key = object::uid_to_bytes(&cert.id);
+    odf::add(&mut profile.id, key, cert);
 }
 
 /////////////////////////////////////
