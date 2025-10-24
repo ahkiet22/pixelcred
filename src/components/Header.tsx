@@ -6,11 +6,19 @@ import "@mysten/dapp-kit/dist/index.css";
 import {
   ConnectButton,
   useCurrentAccount,
+  useCurrentWallet,
   useDisconnectWallet,
   useSuiClientQuery,
 } from "@mysten/dapp-kit";
 import { shortAddress } from "@/helpers/short-address";
-import { ChevronDown, Copy, LogOut } from "lucide-react";
+import {
+  ChevronDown,
+  Copy,
+  LogOut,
+  Settings,
+  SquareArrowOutUpRight,
+  User,
+} from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -20,18 +28,21 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import Image from "next/image";
+import { ADMIN } from "@/constants/contract";
+import { useRouter } from "next/navigation";
+import { ROUTER_CONFIG } from "@/constants/router";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const account = useCurrentAccount();
   const { mutate: disconnect } = useDisconnectWallet();
+  const router = useRouter();
   const handleCertificatesClick = () => {
-  const section = document.getElementById("certificates");
-  if (section) {
-    section.scrollIntoView({ behavior: "smooth" });
-  }
-};
-
+    const section = document.getElementById("certificates");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   const { data, isLoading, error } = useSuiClientQuery(
     "getBalance",
     {
@@ -42,6 +53,10 @@ export default function Header() {
       enabled: !!account?.address, // chỉ chạy khi đã connect
     }
   );
+
+  const handleNavigate = (path: string) => {
+    router.push(path);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -93,7 +108,7 @@ export default function Header() {
               Project
             </Link>
             <Link
-            onClick={handleCertificatesClick}
+              onClick={handleCertificatesClick}
               href="#certificates"
               className="px-5 py-2 font-bold uppercase text-black hover:bg-[#9945ff] hover:text-black border-2 border-transparent hover:border-black hover:shadow-[3px_3px_0_#000] transition-all duration-300"
             >
@@ -114,16 +129,16 @@ export default function Header() {
             {account ? (
               <Sheet>
                 <SheetTrigger>
-                  <button className="text-black! border-4! border-black! shadow-[5px_5px_0_#000]! px-5! rounded-none! md:px-6! py-2! md:py-3! font-black! uppercase! text-sm! md:text-base! transition-all! duration-300! hover:bg-[#26a0d8]! hover:shadow-[7px_7px_0_#000]! hover:-translate-y-1! active:shadow-[3px_3px_0_#000]! active:translate-y-0! flex! items-center! gap-2!">
+                  <button className="text-black border-4 border-black shadow-[5px_5px_0_#000] px-5 rounded-none md:px-6 py-2 md:py-3 font-black uppercase text-sm md:text-base transition-all duration-300 hover:bg-[#26a0d8] hover:shadow-[7px_7px_0_#000] hover:-translate-y-1 active:shadow-[3px_3px_0_#000] active:translate-y-0 flex items-center gap-2">
                     {shortAddress(account.address)}
                     <ChevronDown />
                   </button>
                 </SheetTrigger>
-                <SheetContent className="rounded-2xl">
-                  <SheetHeader>
+                <SheetContent className="rounded-2xl border-4 border-black shadow-[5px_5px_0_#000] ">
+                  <SheetHeader className="h-full">
                     <SheetTitle>Account</SheetTitle>
-                    <SheetDescription>
-                      <div className="w-full max-w-md">
+                    <SheetDescription className="relative h-full space-y-7">
+                      <div className="w-full max-w-md border-2 border-black rounded-2xl shadow-[5px_5px_0_#000]">
                         <div className="relative overflow-hidden rounded-2xl bg-linear-to-br from-purple-600/20 via-blue-600/10 to-slate-900/50 border border-purple-500/20 backdrop-blur-xl p-8 shadow-2xl">
                           <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl pointer-events-none" />
                           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
@@ -169,12 +184,46 @@ export default function Header() {
                             <div className=" flex items-center gap-x-2  ">
                               <p className="text-sm text-slate-400">Balance:</p>
                               <p className="text-xl font-bold text-white tracking-tight">
-                                {Number(data?.totalBalance)}
+                                {Number(data?.totalBalance) / 1e9}
                               </p>
                             </div>
                           </div>
                         </div>
                       </div>
+                      <div
+                        className="flex  gap-x-2 items-center border-2 text-black border-black shadow-[5px_5px_0_#000] transition-all duration-300 hover:bg-[#26a0d8] hover:shadow-[7px_7px_0_#000] hover:-translate-y-1 px-5 py-2 cursor-pointer"
+                        onClick={() => handleNavigate(ROUTER_CONFIG.PROFILE)}
+                      >
+                        <User />
+                        <span>Profile</span>
+                      </div>
+                      {account.address === ADMIN && (
+                        <div
+                          className="flex gap-x-2 items-center border-2 text-black border-black shadow-[5px_5px_0_#000] transition-all duration-300 hover:bg-[#c8d41c] hover:shadow-[7px_7px_0_#000] hover:-translate-y-1 px-5 py-2 cursor-pointer"
+                          onClick={() => handleNavigate(ROUTER_CONFIG.MANAGER)}
+                        >
+                          <Settings />
+                          <span>Manager</span>
+                        </div>
+                      )}
+                      <div
+                        className="flex gap-x-2 items-center border-2 text-black border-black shadow-[5px_5px_0_#000] transition-all duration-300 hover:bg-[#2cd826] hover:shadow-[7px_7px_0_#000] hover:-translate-y-1 px-5 py-2 cursor-pointer"
+                        onClick={() => handleNavigate(ROUTER_CONFIG.SETTING)}
+                      >
+                        <Settings />
+                        <span>Setting</span>
+                      </div>
+                      <div className="flex gap-x-2 items-center border-2 text-black border-black shadow-[5px_5px_0_#000] transition-all duration-300 hover:bg-[#d82626] hover:shadow-[7px_7px_0_#000] hover:-translate-y-1 px-5 py-2 cursor-pointer">
+                        <LogOut />
+                        <span>Logout</span>
+                      </div>
+                      <a
+                        target="_blank"
+                        href="https://suiscan.xyz/testnet/object/0x75d332ea12da7016147ba41a6e9b683553412c07689814f38519bd29deb80011/tx-blocks"
+                        className="absolute left-0 bottom-0 transition-all duration-300 border text-blackborder-black hover:shadow-[2px_2px_0_#000] cursor-pointer"
+                      >
+                        <SquareArrowOutUpRight />
+                      </a>
                     </SheetDescription>
                   </SheetHeader>
                 </SheetContent>

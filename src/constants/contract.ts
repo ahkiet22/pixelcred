@@ -1,0 +1,6 @@
+export const PACKAGE_ID = "0x75d332ea12da7016147ba41a6e9b683553412c07689814f38519bd29deb80011";
+export const MODULE_NAME = "prixel_cred";
+export const ADMIN = "0xb2dc7de78d081dcd877d831c9b666ef621c2d7048ede03df0114ee32277bd05e";
+// FB3nMGe7ifuZ9Yy9AJS4YYbnmo8Q2pq2Vga5KGdsdLcK
+//0x89b022f13770dac5c13f6a9f53abfb99cd025e466b0dcdb5d28658d3f0d0d61b
+// https://suiscan.xyz/testnet/object/0x75d332ea12da7016147ba41a6e9b683553412c07689814f38519bd29deb80011/tx-blocks

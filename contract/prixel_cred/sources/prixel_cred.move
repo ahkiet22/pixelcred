@@ -9,11 +9,9 @@ use sui::object;
 use sui::transfer;
 use sui::tx_context;
 
-//////////////////
-/// ERRORS
-/////////////////
-const E_NOT_OWNER: u64 = 1;
-const E_FORBIDDEN: u64 = 2;
+
+use prixel_cred::errors;
+use prixel_cred::events;
 
 //////////////////
 /// Capability
@@ -69,11 +67,6 @@ public struct ProfileView has copy, drop {
     owner: address,
 }
 
-public struct BuilderVerifiedEvent has copy, drop {
-    profile_addr: address,
-    admin: address,
-}
-
 fun init(ctx: &mut TxContext) {
     let admin = AdminCap {
         id: object::new(ctx),
@@ -81,8 +74,7 @@ fun init(ctx: &mut TxContext) {
     transfer::transfer(admin, tx_context::sender(ctx));
 }
 
-public fun create(
-    ctx: &mut TxContext,
+public entry fun create(
     name: String,
     username: String,
     avatar: String,
@@ -90,6 +82,7 @@ public fun create(
     linkedin: String,
     website: String,
     bio: String,
+    ctx: &mut TxContext,
 ) {
     let uid = object::new(ctx);
     let id = object::uid_to_inner(&uid);
@@ -120,9 +113,9 @@ public fun create(
     transfer::transfer(profile, tx_context::sender(ctx));
 }
 
-public fun view_profile(profile: &Profile) {
+public entry fun view_profile(profile: &Profile) {
     let id = object::uid_to_inner(&profile.id);
-    assert!(profile.verified == false, E_FORBIDDEN);
+    assert!(profile.verified == true, errors::forbidden());
 
     event::emit(ProfileView {
         id,
@@ -140,19 +133,19 @@ public fun view_profile(profile: &Profile) {
 /////////////////////////
 /// Only owner
 ////////////////////////
-public fun edit_profile(
-    profile: &mut Profile,
-    ctx: &mut TxContext,
+public entry fun edit_profile(
     new_name: String,
     new_avatar: String,
     new_github: String,
     new_linkedin: String,
     new_website: String,
     new_bio: String,
+    profile: &mut Profile,
+    ctx: &mut TxContext,
 ) {
     let sender = tx_context::sender(ctx);
-    assert!(sender == profile.owner, E_NOT_OWNER);
-    assert!(profile.verified == false, E_FORBIDDEN);
+    assert!(sender == profile.owner, errors::not_owner());
+    assert!(profile.verified == true, errors::forbidden());
 
     profile.name = new_name;
     profile.avatar = new_avatar;
@@ -162,16 +155,16 @@ public fun edit_profile(
     profile.bio = new_bio;
 }
 
-public fun add_certificate(
+public entry fun add_certificate(
     profile: &mut Profile,
-    ctx: &mut TxContext,
     issuer: String,
     credential_id: String,
     meta: String,
+    ctx: &mut TxContext,
 ) {
     let sender = tx_context::sender(ctx);
-    assert!(sender == profile.owner, E_NOT_OWNER);
-    assert!(profile.verified == false, E_FORBIDDEN);
+    assert!(sender == profile.owner, errors::not_owner());
+    assert!(profile.verified == true, errors::forbidden());
 
     let cert = CertificateCap {
         id: object::new(ctx),
@@ -195,8 +188,5 @@ public entry fun verify_builder(profile: &mut Profile, _: &AdminCap, ctx: &mut T
     profile.verified = true;
 
     let profile_addr = object::uid_to_address(&profile.id);
-    event::emit(BuilderVerifiedEvent {
-        profile_addr,
-        admin: admin_addr,
-    });
+    events::emit_builder_verified_event(profile_addr, admin_addr);
 }
