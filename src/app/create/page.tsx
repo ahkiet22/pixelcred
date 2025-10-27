@@ -12,6 +12,12 @@ import * as yup from "yup";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AnimatedGridBackgroundColor from "@/components/AnimatedGridBackgroundColor";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 
 type TProfileData = {
   name: string;
@@ -105,7 +111,7 @@ export default function CreateDevProfile() {
   };
 
   return (
-    <div className="relative flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="relative flex items-center justify-center bg-linear-to-br from-background via-background to-muted/20 py-12 px-4 sm:px-6 lg:px-8">
       <AnimatedGridBackgroundColor />
       {/* <h1 className="text-3xl md:text-4xl font-bold text-center">
         Create Developer Profile
@@ -246,13 +252,24 @@ export default function CreateDevProfile() {
                   name="github"
                   control={control}
                   render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="github"
-                      type="text"
-                      placeholder="https://github.com/davidchen"
-                      className="transition-all duration-200 focus:ring-2 focus:ring-primary/50 border border-black"
-                    />
+                    <InputGroup className="transition-all duration-200 focus:ring-2 focus:ring-primary/50 border border-black">
+                      <InputGroupAddon className="pr-2 border-r border-black">
+                        <Github className="w-5 h-5 text-foreground shrink-0" />
+                        <div>github.com/</div>
+                      </InputGroupAddon>
+                      <InputGroupInput
+                        id="github"
+                        type="text"
+                        placeholder="username"
+                        value={
+                          field.value?.replace("https://github.com/", "") || ""
+                        }
+                        onChange={(e) => {
+                          const username = e.target.value;
+                          field.onChange(`https://github.com/${username}`);
+                        }}
+                      />
+                    </InputGroup>
                   )}
                 />
                 {errors.github && (
@@ -270,13 +287,27 @@ export default function CreateDevProfile() {
                   name="linkedin"
                   control={control}
                   render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="linkedin"
-                      type="text"
-                      placeholder="https://linkedin.com/in/davidchen"
-                      className="transition-all duration-200 focus:ring-2 focus:ring-primary/50 border border-black"
-                    />
+                    <InputGroup className="transition-all duration-200 focus:ring-2 focus:ring-primary/50 border border-black">
+                      <InputGroupAddon className="pr-2 border-r border-black">
+                        <Linkedin className="w-5 h-5 text-foreground shrink-0" />
+                        <div>linkedin.com/in/</div>
+                      </InputGroupAddon>
+                      <InputGroupInput
+                        id="linkedin"
+                        type="text"
+                        placeholder="username"
+                        value={
+                          field.value?.replace(
+                            "https://linkedin.com/in/",
+                            ""
+                          ) || ""
+                        }
+                        onChange={(e) => {
+                          const username = e.target.value;
+                          field.onChange(`https://linkedin.com/in/${username}`);
+                        }}
+                      />
+                    </InputGroup>
                   )}
                 />
                 {errors.linkedin && (
@@ -294,13 +325,17 @@ export default function CreateDevProfile() {
                   name="website"
                   control={control}
                   render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="website"
-                      type="text"
-                      placeholder="https://davidchen.dev"
-                      className="transition-all duration-200 focus:ring-2 focus:ring-primary/50 border border-black"
-                    />
+                    <InputGroup className="transition-all duration-200 focus:ring-2 focus:ring-primary/50 border border-black">
+                      <InputGroupAddon className="pr-2 border-r border-black">
+                        <Globe className="w-5 h-5 text-foreground shrink-0" />
+                      </InputGroupAddon>
+                      <InputGroupInput
+                        {...field}
+                        id="website"
+                        type="text"
+                        placeholder="https://websiteme.com"
+                      />
+                    </InputGroup>
                   )}
                 />
                 {errors.website && (
@@ -323,11 +358,11 @@ export default function CreateDevProfile() {
 
         {/* Preview */}
         {watch() && (
-          <div className="space-y-6 transition-shadow duration-300 border-4 border-black shadow-[5px_5px_0_#000] p-2">
+          <div className="space-y-6 bg-white z-10 transition-shadow duration-300 border-4 border-black shadow-[5px_5px_0_#000] p-2">
             {/* Header Card with Avatar */}
-            <Card className="overflow-hidden shadow-lg border border-border/50 hover:shadow-xl transition-shadow duration-300">
-              <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-8 text-center">
-                <div className="flex justify-center mb-6">
+            <Card className="overflow-hidden shadow-lg transition-shadow duration-300 border-black border border-dashed">
+              <div className="bg-linear-to-br from-primary/10 to-primary/5 p-8 text-center">
+                <div className="flex justify-center mb-4">
                   {watch("avatar") ? (
                     <div className="relative w-24 h-24 rounded-full overflow-hidden ring-4 ring-primary/20 shadow-lg">
                       {/* <Image
@@ -339,12 +374,12 @@ export default function CreateDevProfile() {
                             e.currentTarget.style.display = "none"
                           }}
                         /> */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent flex items-center justify-center">
+                      <div className="absolute inset-0 bg-linear-to-br from-primary/20 to-transparent flex items-center justify-center">
                         <User className="w-8 h-8 text-muted-foreground" />
                       </div>
                     </div>
                   ) : (
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center ring-4 ring-primary/20 shadow-lg">
+                    <div className="w-24 h-24 rounded-full bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center ring-4 ring-primary/20 shadow-lg">
                       <User className="w-10 h-10 text-muted-foreground" />
                     </div>
                   )}
@@ -360,86 +395,100 @@ export default function CreateDevProfile() {
             </Card>
 
             {/* About Section */}
-            <Card className="p-6 shadow-md border border-border/50 hover:shadow-lg transition-shadow duration-300">
-              <h2 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
-                <div className="w-1 h-6 bg-primary rounded-full" />
-                About
-              </h2>
-              <p className="text-foreground/80 leading-relaxed">
-                {watch("bio") || "Add your bio to see it here..."}
-              </p>
-            </Card>
+            <Tabs
+              defaultValue="profile"
+              className="w-[600px] max-h-[450px] overflow-auto"
+            >
+              <TabsList>
+                <TabsTrigger value="profile">Profile</TabsTrigger>
+                <TabsTrigger value="projects">Projects</TabsTrigger>
+                <TabsTrigger value="certificates">Certificates</TabsTrigger>
+              </TabsList>
+              <TabsContent value="profile" className="space-y-6">
+                <Card className="p-6 shadow-md transition-shadow duration-300 border-black border border-dashed">
+                  <h2 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
+                    <div className="w-1 h-6 bg-primary rounded-full" />
+                    About
+                  </h2>
+                  <p className="text-foreground/80 leading-relaxed">
+                    {watch("bio") || "Add your bio to see it here..."}
+                  </p>
+                </Card>
 
-            {/* Socials Section */}
-            <Card className="p-6 shadow-md border border-border/50 hover:shadow-lg transition-shadow duration-300">
-              <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-                <div className="w-1 h-6 bg-primary rounded-full" />
-                Connect
-              </h2>
-              <div className="grid grid-cols-3 gap-3">
-                <a
-                  href={watch("github")}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group"
-                >
-                  <Button
-                    variant="outline"
-                    className="w-full flex items-center justify-center gap-2 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-200 shadow-sm hover:shadow-md bg-transparent"
-                  >
-                    <Github size={18} />
-                    <span className="hidden sm:inline text-xs font-medium">
-                      GitHub
-                    </span>
-                  </Button>
-                </a>
-                <a
-                  href={watch("linkedin")}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group"
-                >
-                  <Button
-                    variant="outline"
-                    className="w-full flex items-center justify-center gap-2 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-200 shadow-sm hover:shadow-md bg-transparent"
-                  >
-                    <Linkedin size={18} />
-                    <span className="hidden sm:inline text-xs font-medium">
-                      LinkedIn
-                    </span>
-                  </Button>
-                </a>
-                <a
-                  href={watch("website")}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group"
-                >
-                  <Button
-                    variant="outline"
-                    className="w-full flex items-center justify-center gap-2 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-200 shadow-sm hover:shadow-md bg-transparent"
-                  >
-                    <Globe size={18} />
-                    <span className="hidden sm:inline text-xs font-medium">
-                      Website
-                    </span>
-                  </Button>
-                </a>
-              </div>
-            </Card>
+                {/* Socials Section */}
+                <Card className="p-6 shadow-md  transition-shadow duration-300 border-black border border-dashed">
+                  <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+                    <div className="w-1 h-6 bg-primary rounded-full" />
+                    Connect
+                  </h2>
+                  <div className="grid grid-cols-3 gap-3">
+                    <a
+                      href={watch("github")}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group"
+                    >
+                      <Button
+                        variant="outline"
+                        className="w-full flex items-center justify-center gap-2 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-200 shadow-sm hover:shadow-md bg-transparent"
+                      >
+                        <Github size={18} />
+                        <span className="hidden sm:inline text-xs font-medium">
+                          GitHub
+                        </span>
+                      </Button>
+                    </a>
+                    <a
+                      href={watch("linkedin")}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group"
+                    >
+                      <Button
+                        variant="outline"
+                        className="w-full flex items-center justify-center gap-2 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-200 shadow-sm hover:shadow-md bg-transparent"
+                      >
+                        <Linkedin size={18} />
+                        <span className="hidden sm:inline text-xs font-medium">
+                          LinkedIn
+                        </span>
+                      </Button>
+                    </a>
+                    <a
+                      href={watch("website")}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group"
+                    >
+                      <Button
+                        variant="outline"
+                        className="w-full flex items-center justify-center gap-2 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-200 shadow-sm hover:shadow-md bg-transparent"
+                      >
+                        <Globe size={18} />
+                        <span className="hidden sm:inline text-xs font-medium">
+                          Website
+                        </span>
+                      </Button>
+                    </a>
+                  </div>
+                </Card>
 
-            {/* Wallet Section */}
-            <Card className="p-6 shadow-md border border-border/50 hover:shadow-lg transition-shadow duration-300">
-              <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-                <div className="w-1 h-6 bg-primary rounded-full" />
-                Wallet
-              </h2>
-              <div className="flex items-center gap-2 bg-muted/50 p-4 rounded-lg border border-border/30">
-                <code className="flex-1 text-xs sm:text-sm text-muted-foreground font-mono break-all">
-                  {account?.address || "Connect wallet..."}
-                </code>
-              </div>
-            </Card>
+                {/* Wallet Section */}
+                <Card className="p-6 shadow-md transition-shadow duration-300 border-black border border-dashed">
+                  <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+                    <div className="w-1 h-6 bg-primary rounded-full" />
+                    Wallet
+                  </h2>
+                  <div className="flex items-center gap-2 bg-muted/50 p-4 rounded-lg border border-border/30">
+                    <code className="flex-1 text-xs sm:text-sm text-muted-foreground font-mono break-all">
+                      {account?.address || "Connect wallet..."}
+                    </code>
+                  </div>
+                </Card>
+              </TabsContent>
+              <TabsContent value="projects">Projects</TabsContent>
+              <TabsContent value="certificates">Certificates</TabsContent>
+            </Tabs>
           </div>
         )}
       </div>

@@ -4,7 +4,7 @@ export default function AnimatedGridBackground({
   length?: number;
 }) {
   return (
-    <div className="absolute inset-0 overflow-hidden opacity-20 pointer-events-none">
+    <div className="absolute inset-0 overflow-hidden opacity-35 pointer-events-none">
       <div className="grid grid-cols-12 grid-rows-12 h-full">
         {[...Array(length)].map((_, i) => (
           <div

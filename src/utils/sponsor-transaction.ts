@@ -61,3 +61,63 @@ export async function sendSponsoredTransaction(
 
   console.log(result);
 }
+
+export async function getProfile(userAddress: string) {
+  const objects = await client.getOwnedObjects({
+    owner: userAddress,
+    filter: { StructType: `${PACKAGE_ID}::${MODULE_NAME}::Profile` },
+  });
+
+  const profileId = objects.data[0]?.data?.objectId;
+  console.log("OKOKOKOK", profileId);
+  const profileObject = await client.getObject({
+    id: String(profileId),
+    options: {
+      showContent: true,
+      showOwner: true,
+      showType: true,
+    },
+  });
+
+  const profileData = profileObject.data?.content?.fields;
+  return {
+    id: profileId,
+    name: profileData?.name,
+    username: profileData?.username,
+    avatar: profileData?.avatar,
+    github: profileData?.github,
+    linkedin: profileData?.linkedin,
+    website: profileData?.website,
+    bio: profileData?.bio,
+    owner: profileData?.owner,
+    verified: profileData?.verified,
+  };
+}
+
+export async function getUnverifiedProfiles(limit = 10) {
+  const created = await client.queryEvents({
+    query: { MoveEventType: `${PACKAGE_ID}::${MODULE_NAME}::ProfileView` },
+    order: "ascending",
+    limit: 100,
+  });
+
+  const verified = await client.queryEvents({
+    query: { MoveEventType: `${PACKAGE_ID}::events::BuilderVerifiedEvent` },
+    order: "ascending",
+    limit: 100,
+  });
+
+  console.log("verified", verified, created);
+
+  // const verifiedSet = new Set(
+  //   verified.data.map((e) => e.parsedJson.profile_addr)
+  // );
+
+  // // Lọc profile chưa verify
+  // const unverifiedProfiles = created.data
+  //   .map((e) => e.parsedJson.profile_addr)
+  //   .filter((id) => !verifiedSet.has(id))
+  //   .slice(0, limit);
+
+  return [];
+}

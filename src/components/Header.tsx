@@ -6,7 +6,6 @@ import "@mysten/dapp-kit/dist/index.css";
 import {
   ConnectButton,
   useCurrentAccount,
-  useCurrentWallet,
   useDisconnectWallet,
   useSuiClientQuery,
 } from "@mysten/dapp-kit";
@@ -31,6 +30,7 @@ import Image from "next/image";
 import { ADMIN } from "@/constants/contract";
 import { useRouter } from "next/navigation";
 import { ROUTER_CONFIG } from "@/constants/router";
+import { Button } from "./ui/button";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -129,10 +129,10 @@ export default function Header() {
             {account ? (
               <Sheet>
                 <SheetTrigger>
-                  <button className="text-black border-4 border-black shadow-[5px_5px_0_#000] px-5 rounded-none md:px-6 py-2 md:py-3 font-black uppercase text-sm md:text-base transition-all duration-300 hover:bg-[#26a0d8] hover:shadow-[7px_7px_0_#000] hover:-translate-y-1 active:shadow-[3px_3px_0_#000] active:translate-y-0 flex items-center gap-2">
+                  <Button variant={"outline"} className="text-black border-4 border-black shadow-[5px_5px_0_#000] px-5! rounded-none md:px-6! py-2! md:py-3! font-black uppercase text-sm md:text-base transition-all duration-300 hover:bg-[#26a0d8] hover:shadow-[7px_7px_0_#000] hover:-translate-y-1 active:shadow-[3px_3px_0_#000] active:translate-y-0 flex items-center gap-2">
                     {shortAddress(account.address)}
                     <ChevronDown />
-                  </button>
+                  </Button>
                 </SheetTrigger>
                 <SheetContent className="rounded-2xl border-4 border-black shadow-[5px_5px_0_#000] ">
                   <SheetHeader className="h-full">

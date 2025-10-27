@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { TextEffect } from "./text-effect";
 import AnimatedGridBackground from "./AnimatedGridBackground";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -43,13 +44,15 @@ export default function Hero() {
             <span>Launch App</span>
             <ArrowRight className="ml-2" size={20} />
           </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="uppercase font-black pixel-shadow bg-white border-3 border-black shadow-[5px_5px_0_#000]"
-          >
-            Read Docs
-          </Button>
+          <Link href={'https://sdk.mystenlabs.com/'} target="_blank">
+            <Button
+              size="lg"
+              variant="outline"
+              className="uppercase font-black pixel-shadow bg-white border-3 border-black shadow-[5px_5px_0_#000] cursor-pointer"
+            >
+              Read Docs
+            </Button>
+          </Link>
         </div>
 
         {/* Stats */}
