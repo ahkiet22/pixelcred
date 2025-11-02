@@ -11,6 +11,7 @@ import {
 } from "@mysten/dapp-kit";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { PetMascot } from "@/components/pet-mascot";
 
 // export const metadata: Metadata = {
 //   title: "PixelCred - On-Chain Developer Identity",
@@ -37,6 +38,7 @@ export default function RootLayout({
           <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
             <WalletProvider autoConnect>
               <Header />
+              <PetMascot />
               {children}
               <Footer />
             </WalletProvider>

@@ -157,7 +157,7 @@ export function PetMascot() {
         <AnimatePresence>
           {currentMessage && (
             <motion.div
-              className="absolute bottom-20 -left-48 w-40 bg-white rounded-lg shadow-lg border-2 border-black p-3 whitespace-normal text-sm font-medium text-foreground"
+              className="absolute bottom-18 -left-45 w-40 bg-white rounded-lg shadow-lg border-2 border-black p-3 whitespace-normal text-sm font-medium text-foreground"
               initial={{ opacity: 0, scale: 0.8, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: 10 }}

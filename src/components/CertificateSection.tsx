@@ -46,7 +46,7 @@ export default function CertificateSection() {
           {certificates.map((cert, idx) => (
             <Card
               key={idx}
-              className="bg-card border-3 border-border pixel-shadow p-6 hover:border-accent transition-all duration-300 flex items-center justify-between group cursor-pointer"
+              className="relative bg-card border-3 border-border pixel-shadow p-6 hover:border-accent transition-all duration-300 flex items-center justify-between group cursor-pointer"
             >
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-accent/20 border-2 border-accent rounded">

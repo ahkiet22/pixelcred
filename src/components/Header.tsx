@@ -66,7 +66,7 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  console.log(data, error);
+  // console.log(data, error);
 
   return (
     <header
@@ -219,7 +219,7 @@ export default function Header() {
                       </div>
                       <a
                         target="_blank"
-                        href="https://suiscan.xyz/testnet/object/0x75d332ea12da7016147ba41a6e9b683553412c07689814f38519bd29deb80011/tx-blocks"
+                        href="https://suiscan.xyz/testnet/object/0xf7f35537a1040f7bc0a1e8e2d911327f88e9ced1ab783b6c6401c49645368cff/tx-blocks"
                         className="absolute left-0 bottom-0 transition-all duration-300 border text-blackborder-black hover:shadow-[2px_2px_0_#000] cursor-pointer"
                       >
                         <SquareArrowOutUpRight />

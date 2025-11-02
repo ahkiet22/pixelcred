@@ -49,7 +49,7 @@ export default function FeatureSection() {
             return (
               <Card
                 key={idx}
-                className="bg-card border-3 border-border pixel-shadow p-6 hover:border-primary transition-all duration-300 hover:scale-105 cursor-pointer group"
+                className="relative bg-card border-3 border-border pixel-shadow p-6 hover:border-primary transition-all duration-300 hover:scale-105 cursor-pointer group"
               >
                 <div className="flex items-start gap-4">
                   <div

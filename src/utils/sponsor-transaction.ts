@@ -15,6 +15,7 @@ export async function sendSponsoredTransaction(
     name: string;
     username: string;
     avatar: string;
+    avatar_blob: string;
     github: string;
     linkedin: string;
     website: string;
@@ -29,6 +30,7 @@ export async function sendSponsoredTransaction(
       tx.pure.string(`${data.name}`),
       tx.pure.string(`${data.username}`),
       tx.pure.string(`${data.avatar}`),
+      tx.pure.string(`${data.avatar_blob}`),
       tx.pure.string(`${data.github}`),
       tx.pure.string(`${data.linkedin}`),
       tx.pure.string(`${data.website}`),
@@ -69,7 +71,7 @@ export async function getProfile(userAddress: string) {
   });
 
   const profileId = objects.data[0]?.data?.objectId;
-  console.log("OKOKOKOK", profileId);
+  // console.log("OKOKOKOK", profileId);
   const profileObject: any = await client.getObject({
     id: String(profileId),
     options: {
