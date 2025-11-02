@@ -70,7 +70,7 @@ export async function getProfile(userAddress: string) {
 
   const profileId = objects.data[0]?.data?.objectId;
   console.log("OKOKOKOK", profileId);
-  const profileObject = await client.getObject({
+  const profileObject: any = await client.getObject({
     id: String(profileId),
     options: {
       showContent: true,

@@ -18,10 +18,20 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { useState } from "react";
+import { uploadToPinata } from "@/services/pinata";
+import { uploadToWalrus } from "@/helpers/upload-image";
+import {
+  WALRUS_AGGREGATOR_TESTNET,
+  WALRUS_PUBLISHER_TESTNET,
+} from "@/constants/walrus";
+import { Loading } from "@/components/Loading";
+import { tree } from "next/dist/build/templates/app-page";
 
 type TProfileData = {
   name: string;
   username: string;
+  avatar_blob?: string;
   avatar: string;
   github: string;
   linkedin: string;
@@ -30,6 +40,9 @@ type TProfileData = {
 };
 
 export default function CreateDevProfile() {
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+
   const textField = (fieldName: string) =>
     yup
       .string()
@@ -48,7 +61,15 @@ export default function CreateDevProfile() {
   const schema = yup.object().shape({
     name: textField("Product Name"),
     username: textField("Username"),
-    avatar: urlField("Avatar"),
+    avatar: yup
+      .string()
+      .min(3, `Avatar must be at least 3 characters`)
+      .max(255, `Avatar must not exceed 255 characters`)
+      .url(`Avatar must be a valid URL`),
+    avatar_blob: yup
+      .string()
+      .min(3, `Avatar Blob must be at least 3 characters`)
+      .max(255, `Avatar Blob must not exceed 255 characters`),
     github: urlField("Github"),
     linkedin: urlField("LinkedIn"),
     website: urlField("Website"),
@@ -59,6 +80,7 @@ export default function CreateDevProfile() {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -71,31 +93,34 @@ export default function CreateDevProfile() {
     navigator.clipboard.writeText(account?.address ?? "");
   };
 
-  // Hàm upload hình ảnh
-  // const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (!file) return;
-
-  //   try {
-  //     console.log("Upload avatar:", file.name);
-
-  //     const uploadedUrl = await uploadMediaWithFlow(file, account);
-
-  //     console.log("✅ Upload thành công:", uploadedUrl);
-  //     setProfile((prev) => ({ ...prev, avatar: uploadedUrl }));
-  //   } catch (error) {
-  //     console.error("❌ Upload failed:", error);
-  //     alert("Upload thất bại! Vui lòng thử lại hoặc chọn file khác.");
-  //   } finally {
-  //   }
-  // };
-
   const onSubmit = async (data: TProfileData) => {
-    if (data && account) {
+    if (!data || !account || !avatarFile) return;
+
+    setUploadingAvatar(true);
+
+    try {
+      const pinataUrl = await uploadToPinata(avatarFile);
+
+      const walrusResult = await uploadToWalrus({
+        file: avatarFile,
+        epochs: 5,
+        publisherUrl: WALRUS_PUBLISHER_TESTNET,
+        aggregatorUrl: WALRUS_AGGREGATOR_TESTNET,
+      });
+
+      console.log("DONE", pinataUrl, walrusResult);
+
+      const finalPayload = {
+        ...data,
+        avatar: pinataUrl,
+        avatar_blob: walrusResult.blobId,
+      };
+
       const secretKey = process.env.NEXT_PUBLIC_SPONSOR_PRIVATE_KEY;
       const sponsorSigner = Ed25519Keypair.fromSecretKey(String(secretKey));
+
       await sendSponsoredTransaction(
-        account?.address,
+        account.address,
         async (tx) => {
           const { signature } = await signTransaction({
             transaction: tx,
@@ -104,14 +129,18 @@ export default function CreateDevProfile() {
           return signature;
         },
         sponsorSigner,
-        data
+        finalPayload
       );
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setUploadingAvatar(false);
     }
-    console.log("DONE", data);
   };
 
   return (
     <div className="relative flex items-center justify-center bg-linear-to-br from-background via-background to-muted/20 py-12 px-4 sm:px-6 lg:px-8">
+      {uploadingAvatar && <Loading isLoading={true} />}
       <AnimatedGridBackgroundColor />
       {/* <h1 className="text-3xl md:text-4xl font-bold text-center">
         Create Developer Profile
@@ -135,7 +164,10 @@ export default function CreateDevProfile() {
                     <Input
                       {...field}
                       id="avatar"
-                      type="text"
+                      type="file"
+                      onChange={(e) =>
+                        setAvatarFile(e.target.files?.[0] || null)
+                      }
                       placeholder="https://image.com/avatar.jpg"
                       className="transition-all duration-200 focus:ring-2 focus:ring-primary/50 border border-black"
                     />
