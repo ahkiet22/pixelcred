@@ -26,13 +26,12 @@ import {
   WALRUS_PUBLISHER_TESTNET,
 } from "@/constants/walrus";
 import { Loading } from "@/components/Loading";
-import { tree } from "next/dist/build/templates/app-page";
 
 type TProfileData = {
   name: string;
   username: string;
   avatar_blob?: string;
-  avatar: string;
+  avatar?: string;
   github: string;
   linkedin: string;
   website: string;

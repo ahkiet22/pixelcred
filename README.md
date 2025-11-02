@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Developer Profile dApp
 
-## Getting Started
+## Project Description
 
-First, run the development server:
+This application allows users to create and manage personal developer profiles on the Sui blockchain (testnet). Profile data is stored in a decentralized manner and can be uploaded to Walrus or Pinata (IPFS). The smart contract manages profiles and supports verification of information, including certificates and profile images.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Key Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Connect Wallet**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   * Enables users to connect their Sui wallet for authentication and on-chain operations.
+   * Supports testnet for development and testing.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Create & Upload Profile On-chain**
 
-## Learn More
+   * Users can create a personal profile and store data directly on the blockchain testnet.
+   * Each profile is uniquely linked to the user's wallet address.
 
-To learn more about Next.js, take a look at the following resources:
+3. **Upload and Store Images**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   * Profile pictures or other media files can be uploaded to Walrus and Pinata (IPFS).
+   * The system returns IPFS links to ensure decentralized and verifiable data storage.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. **Retrieve Profile Data**
 
-## Deploy on Vercel
+   * Allows reading a user's profile information from the blockchain.
+   * Supports displaying public or detailed information by wallet address.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. **Smart Contract Profile Management & Verification**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   * Smart contracts handle profile verification and management.
+   * Currently addressing an edit permission issue; full integration is pending.
+   * Supports updating profile information, adding certificates, and changing private images.
+
+6. **Future Enhancements**
+
+   * Integrate Seal Verification to increase security and on-chain data authenticity.
+
+## How to Use
+
+1. Connect your Sui wallet.
+2. Create a new profile and upload it to the blockchain.
+3. Upload profile images or related media to Walrus/Pinata.
+4. View or update the profile.
+5. (Optional) Add certificates or update private images.
+
+## Technologies Used
+
+* Sui Blockchain (Testnet)
+* Move Smart Contract
+* IPFS (Walrus, Pinata)
+* React / Next.js / Tailwind CSS / Shadcn UI
