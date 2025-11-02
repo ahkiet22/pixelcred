@@ -1,6 +1,8 @@
 #[allow(duplicate_alias)]
 module prixel_cred::prixel_cred;
 
+use prixel_cred::errors;
+use prixel_cred::events;
 use std::string::String;
 use sui::dynamic_field as df;
 use sui::dynamic_object_field as odf;
@@ -8,10 +10,6 @@ use sui::event;
 use sui::object;
 use sui::transfer;
 use sui::tx_context;
-
-
-use prixel_cred::errors;
-use prixel_cred::events;
 
 //////////////////
 /// Capability
@@ -142,6 +140,7 @@ public entry fun view_profile(profile: &Profile) {
 public entry fun edit_profile(
     new_name: String,
     new_avatar: String,
+    new_avatar_blob: vector<u8>,
     new_github: String,
     new_linkedin: String,
     new_website: String,
@@ -155,10 +154,22 @@ public entry fun edit_profile(
 
     profile.name = new_name;
     profile.avatar = new_avatar;
+    profile.avatar_blob = new_avatar_blob;
     profile.github = new_github;
     profile.linkedin = new_linkedin;
     profile.website = new_website;
     profile.bio = new_bio;
+}
+
+public entry fun update_avatar(
+    profile: &mut Profile,
+    new_avatar: String,
+    new_blob: vector<u8>,
+    ctx: &mut TxContext,
+) {
+    assert!(tx_context::sender(ctx) == profile.owner, errors::not_owner());
+    profile.avatar = new_avatar;
+    profile.avatar_blob = new_blob;
 }
 
 public entry fun add_certificate(
