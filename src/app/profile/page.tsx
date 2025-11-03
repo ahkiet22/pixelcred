@@ -11,7 +11,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AnimatedGridBackgroundColor from "@/components/AnimatedGridBackgroundColor";
 import { Loading } from "@/components/Loading";
 import { toast } from "sonner";
-import { PetMascot } from "@/components/pet-mascot";
 
 type TProfileData = {
   name: string;
