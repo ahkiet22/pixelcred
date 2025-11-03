@@ -115,7 +115,7 @@ export default function CreateDevProfile() {
         avatar_blob: walrusResult.blobId,
       };
 
-      const secretKey = process.env.NEXT_PUBLIC_SPONSOR_PRIVATE_KEY;
+      const secretKey = process.env.SPONSOR_PRIVATE_KEY;
       const sponsorSigner = Ed25519Keypair.fromSecretKey(String(secretKey));
 
       await sendSponsoredTransaction(
