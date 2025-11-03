@@ -141,7 +141,7 @@ export function PetMascot() {
       {/* Pet Container - Fixed on left edge, now draggable */}
       <motion.div
         ref={petRef}
-        className={`fixed z-50 cursor-${isDragging ? "grabbing" : "grab"}`}
+        className={`fixed z-50 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
