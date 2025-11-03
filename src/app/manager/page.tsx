@@ -1,15 +1,10 @@
-"use client";
+import Guard from "@/guards";
+import ManagerPage from "@/views/pages/manager";
 
-import { getUnverifiedProfiles } from "@/utils/sponsor-transaction";
-import { useEffect } from "react";
-
-export default function DeveloperProfile() {
-  useEffect(() => {
-    const getData = async () => {
-      const data = await getUnverifiedProfiles(10);
-      // console.log(data)
-    };
-    getData();
-  }, []);
-  return <>ok</>;
+export default function Page() {
+  return (
+    <Guard authGuard={true}>
+      <ManagerPage />
+    </Guard>
+  );
 }

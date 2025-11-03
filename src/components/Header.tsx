@@ -31,12 +31,21 @@ import { ADMIN } from "@/constants/contract";
 import { useRouter } from "next/navigation";
 import { ROUTER_CONFIG } from "@/constants/router";
 import { Button } from "./ui/button";
+import { useAuthStore } from "@/helpers/authStore";
+import { Loading } from "./Loading";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const account = useCurrentAccount();
   const { mutate: disconnect } = useDisconnectWallet();
   const router = useRouter();
+
+  const accountWallet = useAuthStore((state) => state.account);
+  const loading = useAuthStore((state) => state.loading);
+  const logout = useAuthStore((state) => state.logout);
+  const setLoading = useAuthStore((state) => state.setLoading);
+  const setAccount = useAuthStore((state) => state.setAccount);
+
   const handleCertificatesClick = () => {
     const section = document.getElementById("certificates");
     if (section) {
@@ -50,7 +59,7 @@ export default function Header() {
       coinType: "0x2::sui::SUI",
     },
     {
-      enabled: !!account?.address, // chỉ chạy khi đã connect
+      enabled: !!account?.address,
     }
   );
 
@@ -66,7 +75,14 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // console.log(data, error);
+  useEffect(() => {
+    setLoading(true);
+    if (account) {
+      setAccount(account);
+    } else {
+      setAccount(null);
+    }
+  }, [account, setAccount, setLoading]);
 
   return (
     <header
@@ -76,6 +92,7 @@ export default function Header() {
           : "bg-transparent"
       }`}
     >
+      {loading && <Loading isLoading={true} />}
       <div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12">
         <div className="flex items-center justify-between py-4 md:py-5">
           {/* Logo */}
@@ -129,7 +146,10 @@ export default function Header() {
             {account ? (
               <Sheet>
                 <SheetTrigger>
-                  <Button variant={"outline"} className="text-black border-4 border-black shadow-[5px_5px_0_#000] px-5! rounded-none md:px-6! py-2! md:py-3! font-black uppercase text-sm md:text-base transition-all duration-300 hover:bg-[#26a0d8] hover:shadow-[7px_7px_0_#000] hover:-translate-y-1 active:shadow-[3px_3px_0_#000] active:translate-y-0 flex items-center gap-2">
+                  <Button
+                    variant={"outline"}
+                    className="text-black border-4 border-black shadow-[5px_5px_0_#000] px-5! rounded-none md:px-6! py-2! md:py-3! font-black uppercase text-sm md:text-base transition-all duration-300 hover:bg-[#26a0d8] hover:shadow-[7px_7px_0_#000] hover:-translate-y-1 active:shadow-[3px_3px_0_#000] active:translate-y-0 flex items-center gap-2"
+                  >
                     {shortAddress(account.address)}
                     <ChevronDown />
                   </Button>
@@ -174,7 +194,10 @@ export default function Header() {
                               </div>
 
                               <button
-                                onClick={() => disconnect()}
+                                onClick={() => {
+                                  disconnect();
+                                  logout();
+                                }}
                                 className="hover:text-red-500 hover:bg-white/10 rounded-lg transition-colors p-2"
                               >
                                 <LogOut />
