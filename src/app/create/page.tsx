@@ -107,7 +107,7 @@ export default function CreateDevProfile() {
         aggregatorUrl: WALRUS_AGGREGATOR_TESTNET,
       });
 
-      console.log("DONE", pinataUrl, walrusResult);
+      // console.log("DONE", pinataUrl, walrusResult);
 
       const finalPayload = {
         ...data,

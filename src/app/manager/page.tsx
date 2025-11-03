@@ -7,7 +7,7 @@ export default function DeveloperProfile() {
   useEffect(() => {
     const getData = async () => {
       const data = await getUnverifiedProfiles(10);
-      console.log(data)
+      // console.log(data)
     };
     getData();
   }, []);

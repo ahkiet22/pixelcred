@@ -39,7 +39,7 @@ export async function uploadToWalrus({
 
   const data = await response.json();
 
-  console.log("DATA UPLOAD ON CHAIN", data)
+  // console.log("DATA UPLOAD ON CHAIN", data)
 
   // Extract blob ID and Sui object ID
   const blobId =
@@ -50,7 +50,7 @@ export async function uploadToWalrus({
 
   const blobUrl = `${aggregatorUrl}/v1/blobs/${blobId}`;
 
-  console.log("blobUrl", blobUrl)
+  // console.log("blobUrl", blobUrl)
 
   return {
     blobId,

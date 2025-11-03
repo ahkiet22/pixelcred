@@ -63,7 +63,7 @@ export default function DeveloperProfile() {
     fetchDataProfile();
   }, [account?.address]);
 
-  console.log(profile?.avatar);
+  // console.log(profile?.avatar);
   return (
     <>
       <main className="relative min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">

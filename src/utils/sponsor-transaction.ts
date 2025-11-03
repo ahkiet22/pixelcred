@@ -61,7 +61,7 @@ export async function sendSponsoredTransaction(
     options: { showEffects: true },
   });
 
-  console.log(result);
+  // console.log(result);
 }
 
 export async function getProfile(userAddress: string) {
@@ -109,7 +109,7 @@ export async function getUnverifiedProfiles(limit = 10) {
     limit: 100,
   });
 
-  console.log("verified", verified, created);
+  // console.log("verified", verified, created);
 
   // const verifiedSet = new Set(
   //   verified.data.map((e) => e.parsedJson.profile_addr)
