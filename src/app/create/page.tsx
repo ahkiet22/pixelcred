@@ -3,7 +3,7 @@ import CreatePage from "@/views/pages/create";
 
 export default function Page() {
   return (
-    <Guard authGuard={true}>
+    <Guard authGuard={true} guestGuard={false}>
       <CreatePage />
     </Guard>
   );

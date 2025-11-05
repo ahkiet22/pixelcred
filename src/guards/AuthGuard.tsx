@@ -18,11 +18,15 @@ const AuthGuard = ({ children, fallback }: AuthGuardProps) => {
   const pathName = usePathname();
 
   useEffect(() => {
-    if (!account) {
-      logout();
-      router.replace("/" + (pathName ? `?returnUrl=${pathName}` : ""));
-    }
-  }, [account, pathName, router]);
+    const timer = setTimeout(() => {
+      if (!account) {
+        logout();
+        router.replace("/" + (pathName ? `?returnUrl=${pathName}` : ""));
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [account, loading, logout, router, pathName]);
 
   if (loading || !account) {
     return fallback;
